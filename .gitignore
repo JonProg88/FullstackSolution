@@ -1,0 +1,9 @@
+# Archivos y carpetas que no deben subirse a Git
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.dbmdl
+*.log
