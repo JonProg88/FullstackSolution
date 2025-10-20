@@ -78,6 +78,13 @@ dotnet add package Microsoft.EntityFrameworkCore.Tools
 dotnet add package Swashbuckle.AspNetCore
 
 
+dotnet sln add Domain/Domain.csproj
+dotnet sln add Infrastructure/Infrastructure.csproj
+dotnet sln add Application/Application.csproj
+dotnet sln add Fullstack.Api/Fullstack.Api.csproj
+
+l proyecto que debes establecer como inicio es Fullstack.Api
+cd 
 =====================================
 4. APPSETTINGS.JSON
 =====================================
