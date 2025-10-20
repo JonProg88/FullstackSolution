@@ -102,6 +102,26 @@ dotnet list Application reference
 dotnet list Fullstack.Api reference
 
 
+3.6 cd D:\POO\api\FullstackSolution\Infrastructure
+dotnet add package Microsoft.EntityFrameworkCore
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add package Microsoft.EntityFrameworkCore.Tools
+
+3.7 Dentro del proyecto Fullstack.Api
+
+cd ..\Fullstack.Api
+
+dotnet add package Swashbuckle.AspNetCore
+(Aunque esa parte ya se realizo)
+dotnet add reference ..\Infrastructure
+dotnet add reference ..\Application
+dotnet add reference ..\Domain
+
+3.8 Dentro del proyecto Application
+cd ..\Application
+dotnet add reference ..\Domain
+dotnet add reference ..\Infrastructure
+
 
 l proyecto que debes establecer como inicio es Fullstack.Api
 cd 
