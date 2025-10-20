@@ -1,0 +1,225 @@
+Guía completa de Proyecto React (Frontend del Fullstack .NET + SQL Server)
+
+=====================================
+1. CREAR EL PROYECTO REACT + TYPESCRIPT
+=====================================
+
+# Ubicarse en la carpeta raíz del backend
+cd D:\POO\api\FullstackSolution
+
+# Crear el proyecto React con Vite
+npm create vite@latest web -- --template react-ts
+
+# Si pregunta:
+# → Use rollup-vite (Experimental)?  => No
+# → Install with npm and start now?  => Yes
+
+# Entrar a la carpeta
+cd web
+
+# Instalar dependencias esenciales
+npm install axios bootstrap react-router-dom
+
+
+=====================================
+2. ESTRUCTURA DE CARPETAS REACT
+=====================================
+
+web/
+│
+├── src/
+│   ├── api/
+│   │   └── api.ts
+│   ├── components/
+│   │   ├── ProductList.tsx
+│   │   ├── ProductForm.tsx
+│   │   └── Navbar.tsx
+│   ├── pages/
+│   │   ├── Home.tsx
+│   │   ├── Create.tsx
+│   │   └── Edit.tsx
+│   ├── App.tsx
+│   └── main.tsx
+│
+├── package.json
+└── tsconfig.json
+
+
+=====================================
+3. CONFIGURAR AXIOS
+=====================================
+
+src/api/api.ts
+---------------
+import axios from "axios";
+
+export const api = axios.create({
+  baseURL: "https://localhost:7153",
+});
+
+
+=====================================
+4. COMPONENTES PRINCIPALES
+=====================================
+
+src/components/Navbar.tsx
+-------------------------
+import { Link } from "react-router-dom";
+
+export const Navbar = () => (
+  <nav className="navbar navbar-dark bg-dark p-3">
+    <div className="container">
+      <Link className="navbar-brand" to="/">Fullstack Demo</Link>
+      <div>
+        <Link className="btn btn-outline-light me-2" to="/">Inicio</Link>
+        <Link className="btn btn-success" to="/create">Nuevo Producto</Link>
+      </div>
+    </div>
+  </nav>
+);
+
+---------------------------------------
+
+src/components/ProductList.tsx
+------------------------------
+import { useEffect, useState } from "react";
+import { api } from "../api/api";
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  stock: number;
+  createdAt: string;
+}
+
+export const ProductList = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.get("/products").then((res) => {
+      setProducts(res.data);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) return <p className="text-center">Cargando...</p>;
+
+  return (
+    <div className="container mt-4">
+      <h2>Listado</h2>
+      <p>Total: {products.length}</p>
+      <ul className="list-group">
+        {products.map((p) => (
+          <li key={p.id} className="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <strong>{p.name}</strong><br />
+              <span>${p.price} — stock {p.stock}</span><br />
+              <small>{new Date(p.createdAt).toLocaleString()}</small>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+
+---------------------------------------
+
+src/components/ProductForm.tsx
+------------------------------
+import { useState } from "react";
+import { api } from "../api/api";
+import { useNavigate } from "react-router-dom";
+
+export const ProductForm = () => {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ name: "", price: 0, stock: 0 });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await api.post("/products", form);
+    navigate("/");
+  };
+
+  return (
+    <div className="container mt-4">
+      <h2>Nuevo producto</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label>Nombre</label>
+          <input name="name" onChange={handleChange} className="form-control" required />
+        </div>
+        <div className="mb-3">
+          <label>Precio</label>
+          <input name="price" type="number" onChange={handleChange} className="form-control" required />
+        </div>
+        <div className="mb-3">
+          <label>Stock</label>
+          <input name="stock" type="number" onChange={handleChange} className="form-control" required />
+        </div>
+        <button className="btn btn-primary">Guardar</button>
+      </form>
+    </div>
+  );
+};
+
+
+=====================================
+5. PÁGINAS
+=====================================
+
+src/pages/Home.tsx
+------------------
+import { ProductList } from "../components/ProductList";
+export const Home = () => <ProductList />;
+
+src/pages/Create.tsx
+--------------------
+import { ProductForm } from "../components/ProductForm";
+export const Create = () => <ProductForm />;
+
+
+=====================================
+6. APP PRINCIPAL
+=====================================
+
+src/App.tsx
+------------
+import "bootstrap/dist/css/bootstrap.min.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Navbar } from "./components/Navbar";
+import { Home } from "./pages/Home";
+import { Create } from "./pages/Create";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/create" element={<Create />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+export default App;
+
+
+=====================================
+7. INICIO DEL SERVIDOR
+=====================================
+
+# Correr el proyecto React
+npm run dev
+
+# Deberías ver:
+# Local: http://localhost:5173/
+
+# Si ves el listado correctamente, tu front está conectado al backend .NET.
