@@ -1,387 +1,128 @@
+Net core 8
 
-Guía completa de Proyecto Fullstack (.NET + SQL Server)
-
-=====================================
-1. CREAR BASE DE DATOS EN SQL SERVER
-=====================================
-
-CREATE DATABASE DBFullstack;
-GO
-USE DBFullstack;
-GO
-
-CREATE TABLE Products (
-    Id INT IDENTITY(1,1) PRIMARY KEY,
-    Name NVARCHAR(100) NOT NULL,
-    Price DECIMAL(10,2) NOT NULL,
-    Stock INT NOT NULL,
-    CreatedAt DATETIME DEFAULT GETDATE()
-);
-GO
-
-INSERT INTO Products (Name, Price, Stock) VALUES
-('Vaso de sangre', 210, 2),
-('Brazo biónico', 3150, 4),
-('Máscara de piel humana', 55000, 3);
-GO
-
-
-=====================================
-2. ESTRUCTURA DEL PROYECTO .NET 8
-=====================================
-
-FullstackSolution/
-│
-├── Domain/
-│   ├── Entities/
-│   │   └── Product.cs
-│   └── DTOs/
-│       └── ProductCreateDto.cs
-│
-├── Infrastructure/
-│   ├── Data/
-│   │   └── AppDbContext.cs
-│   ├── Repositories/
-│   │   ├── IProductRepository.cs
-│   │   └── ProductRepository.cs
-│
-├── Application/
-│   ├── Interfaces/
-│   │   └── IProductService.cs
-│   └── Services/
-│       └── ProductService.cs
-│
-└── Fullstack.Api/
-    ├── Controllers/
-    │   └── ProductController.cs
-    ├── Program.cs
-    ├── appsettings.json
-    └── Properties/
-        └── launchSettings.json
-
-
-=====================================
-3. INSTALACIONES NECESARIAS
-=====================================
-
-3.1 CREACIÓN DE PROYECTOS
-
-dotnet new webapi -n Fullstack.Api
-dotnet new classlib -n Domain
-dotnet new classlib -n Infrastructure
-dotnet new classlib -n Application
-dotnet new sln -n FullstackSolution
-
-3.2 AGREGAR PROYECTOS A LA SOLUCIÓN
-dotnet sln add Domain/ Infrastructure/ Application/ Fullstack.Api/
-
-
-3.3 AGREGAR REFERENCIAS ENTRE CAPAS
-
-dotnet add Infrastructure reference Domain
-dotnet add Application reference Infrastructure
-dotnet add Application reference Domain
-dotnet add Fullstack.Api reference Application
-dotnet add Fullstack.Api reference Infrastructure
-dotnet add Fullstack.Api reference Domain
-
-3.4 DEPENDENCIAS NuGet (para EF Core y Swagger)
-
-dotnet add Fullstack.Api reference Domain/ Infrastructure/ Application/
-
-3.5 (Opcional pero útil) Confirmar configuración
-
-dotnet sln list
-
-dotnet sln add Domain/Domain.csproj
-dotnet sln add Infrastructure/Infrastructure.csproj
-dotnet sln add Application/Application.csproj
-dotnet sln add Fullstack.Api/Fullstack.Api.csproj
-
-dotnet list Infrastructure reference
-dotnet list Application reference
-dotnet list Fullstack.Api reference
-
-
-3.6 cd D:\POO\api\FullstackSolution\Infrastructure con la versión 8.0.10
-
-dotnet add package Microsoft.EntityFrameworkCore
-dotnet add package Microsoft.EntityFrameworkCore.SqlServer
-dotnet add package Microsoft.EntityFrameworkCore.Tools
-
-3.7 Dentro del proyecto Fullstack.Api
-
-cd ..\Fullstack.Api
-
-dotnet add package Swashbuckle.AspNetCore
-(Aunque esa parte ya se realizo)
-dotnet add reference ..\Infrastructure
-dotnet add reference ..\Application
-dotnet add reference ..\Domain
-
-3.8 Dentro del proyecto Application
-cd ..\Application
-dotnet add reference ..\Domain
-dotnet add reference ..\Infrastructure
-
-
-l proyecto que debes establecer como inicio es Fullstack.Api
-cd 
-=====================================
-4. APPSETTINGS.JSON
-=====================================
-
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=ALANIS;Database=DBFullstack;Trusted_Connection=True;TrustServerCertificate=True;"
-  },
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft.AspNetCore": "Warning"
-    }
-  },
-  "AllowedHosts": "*"
-}
-
-
-=====================================
-5. CLASES PRINCIPALES
-=====================================
-
-Product.cs
-----------
-namespace Domain.Entities;
-public class Product {
-    public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public decimal Price { get; set; }
-    public int Stock { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
-}
-
-ProductCreateDto.cs
--------------------
-namespace Domain.DTOs;
-public class ProductCreateDto {
-    public string Name { get; set; } = string.Empty;
-    public decimal Price { get; set; }
-    public int Stock { get; set; }
-}
-
-
-=====================================
-6. EF CORE CONTEXTO
-=====================================
-
-using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-
-namespace Infrastructure.Data;
-public class AppDbContext : DbContext {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-    public DbSet<Product> Products => Set<Product>();
-}
-
-
-=====================================
-7. REPOSITORIO E INTERFAZ
-=====================================
-
-IProductRepository.cs
----------------------
-using Domain.Entities;
-namespace Infrastructure.Repositories;
-public interface IProductRepository {
-    Task<IEnumerable<Product>> GetAllAsync();
-    Task<Product?> GetByIdAsync(int id);
-    Task<Product> AddAsync(Product product);
-    Task UpdateAsync(Product product);
-    Task DeleteAsync(int id);
-}
-
-ProductRepository.cs
---------------------
-using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-
-namespace Infrastructure.Repositories;
-public class ProductRepository : IProductRepository {
-    private readonly AppDbContext _context;
-    public ProductRepository(AppDbContext context) => _context = context;
-
-    public async Task<IEnumerable<Product>> GetAllAsync() => await _context.Products.ToListAsync();
-    public async Task<Product?> GetByIdAsync(int id) => await _context.Products.FindAsync(id);
-    public async Task<Product> AddAsync(Product product) {
-        _context.Products.Add(product);
-        await _context.SaveChangesAsync();
-        return product;
-    }
-    public async Task UpdateAsync(Product product) {
-        _context.Entry(product).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
-    }
-    public async Task DeleteAsync(int id) {
-        var product = await _context.Products.FindAsync(id);
-        if (product != null) {
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
-        }
-    }
-}
-
-
-=====================================
-8. SERVICIO DE APLICACIÓN
-=====================================
-
-IProductService.cs
-------------------
-using Domain.Entities;
-using Domain.DTOs;
-
-namespace Application.Interfaces;
-public interface IProductService {
-    Task<IEnumerable<Product>> GetAllAsync();
-    Task<Product?> GetByIdAsync(int id);
-    Task<Product> AddAsync(ProductCreateDto dto);
-    Task UpdateAsync(int id, ProductCreateDto dto);
-    Task DeleteAsync(int id);
-}
-
-ProductService.cs
------------------
-using Application.Interfaces;
-using Domain.DTOs;
-using Domain.Entities;
-using Infrastructure.Repositories;
-
-namespace Application.Services;
-public class ProductService : IProductService {
-    private readonly IProductRepository _repo;
-    public ProductService(IProductRepository repo) => _repo = repo;
-
-    public Task<IEnumerable<Product>> GetAllAsync() => _repo.GetAllAsync();
-    public Task<Product?> GetByIdAsync(int id) => _repo.GetByIdAsync(id);
-
-    public async Task<Product> AddAsync(ProductCreateDto dto) {
-        var p = new Product { Name = dto.Name, Price = dto.Price, Stock = dto.Stock };
-        return await _repo.AddAsync(p);
-    }
-
-    public async Task UpdateAsync(int id, ProductCreateDto dto) {
-        var p = await _repo.GetByIdAsync(id);
-        if (p == null) throw new Exception("No encontrado");
-        p.Name = dto.Name;
-        p.Price = dto.Price;
-        p.Stock = dto.Stock;
-        await _repo.UpdateAsync(p);
-    }
-
-    public Task DeleteAsync(int id) => _repo.DeleteAsync(id);
-}
-
-
-=====================================
-9. CONTROLADOR Y PROGRAM.CS
-=====================================
-
-ProductController.cs
---------------------
-using Application.Interfaces;
-using Domain.DTOs;
-using Microsoft.AspNetCore.Mvc;
-
-namespace Fullstack.Api.Controllers;
-[ApiController]
-[Route("products")]
-public class ProductController : ControllerBase {
-    private readonly IProductService _service;
-    public ProductController(IProductService service) => _service = service;
-
-    [HttpGet]
-    public async Task<IActionResult> GetAll() => Ok(await _service.GetAllAsync());
-
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id) {
-        var p = await _service.GetByIdAsync(id);
-        return p is null ? NotFound() : Ok(p);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Create(ProductCreateDto dto) =>
-        Ok(await _service.AddAsync(dto));
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, ProductCreateDto dto) {
-        await _service.UpdateAsync(id, dto);
-        return NoContent();
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id) {
-        await _service.DeleteAsync(id);
-        return NoContent();
-    }
-}
-
-Program.cs
-----------
-using Application.Interfaces;
-using Application.Services;
-using Infrastructure.Data;
-using Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
-
-var builder = WebApplication.CreateBuilder(args);
-
-// EF Core con SQL Server
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Inyección de dependencias
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IProductService, ProductService>();
-
-// CORS (para el front)
-builder.Services.AddCors(opt =>
-{
-    opt.AddPolicy("web", p => p
-        .WithOrigins("http://localhost:5173")
-        .AllowAnyHeader()
-        .AllowAnyMethod());
-});
-
-// 🔥 ESTA LÍNEA FALTABA
-builder.Services.AddControllers();
-
-// Swagger
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-app.UseCors("web");
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-// Mapea controladores
-app.MapControllers();
-
-app.Run();
-
-
-
-=====================================
-10. PRUEBA FINAL
-=====================================
-
-1. Ejecutar SQL Server y verificar la DB.
-2. En Visual Studio: F5 o dotnet run.
-3. Abrir https://localhost:7153/swagger/index.html
-4. Probar los endpoints.
-5. Conectar front en React en http://localhost:5173/
+ SOLID
+O en pocas palabras SOLID me ayuda a escribir código limpio y escalable, DRY evita duplicar lógica y Kiss me recuerda
+ que mientras mas simple sea mi solución de corregir 
+
+ Bueno es código que sea limpio y fácil de mantener
+
+S (Single Respnsability o responsabilidad unica) : Cada clase o método debe tener solo una responsabilidad. Por ejemplo, si una clase se encarga de manejar productos, 
+                                                   no debería también enviar correos, porque eso sería otra responsabilidad distinta.
+
+O (Open/Closed) : el código debe estar abierto a extenderse, pero cerrado a modificarse. Es decir si necesito un nuevo comportamiento
+                  ,lo agrego sin romper lo que ya funciona.
+
+L (Liskov Substitucion) : si la clase hereda de otra, debe de poder usarse sin que el programa se rompa.
+
+I (Interface Segregation) : Es mejor tener interfaces pequeñas y especificas qu uno gigante que obligue a implementar cosas inecesarias.
+
+D (Dependency Iversion) : el código debe depender de abstracciones (interfaces) no de implementación concretas. Asi se hace mas flexible fácil de probar.
+
+DRY (Dont repeat youself) : significa no repetir el código. Si tienes la misma lógica en varios ligares, lo mejor es crear un metodo o función reutilizadble
+                            Asi se evita errores y facilitas el mimo mantenimiento.
+
+KISS (Keep it simple, stupid) : el código debe ser simple y fácil de entender. No hay que complicar las cosas conestructuras innecesarias o soluciones "elegantes" que
+                                nadie entienda. Lo simple suele ser mas confiable y mas fácil de corregir.
+
+Docker : es un aherrramienta que sirve para empaquetar y ejecutar apliaciones en contenedores.
+         Un contenedor es como un acaja virtual ligera, que incluye todo lo que tu app necesita para funcionar: código dependencias configuraciones.
+
+         también permite que alguna aplicación corra igual tanto computadora y servidor no importa el sistema operativo ni las versiones instaladas.
+
+         También puede surgir ejemplos que el proyecto ya hecho con .NET cpre 8 y sql server corra bien en local pero en la parte de QA no ...entonces 
+               Docker te permite crear un aimagen  que guarda todo el entorno correcto y cualquiera puede levantarlo con un solo comando.
+               comando de ejecución : 
+               Docker run miapp
+ 
+Microservicios : en mi entendimiento son partes pequeñas e idependientes de una aplicación grande. ejemplo sus función puede ser como : usuarios, pagos o notificaciones. con ello
+                 se tiene cierta comunicación entre  APIS
+cada modulo tiene propia lógica y base de datos, se cmunica por API y puede desplegarse de forma independiente.
+
+Creación de APIS : Crear una API es construir un servicio que expone datos mediante endpoints HTTP. En .NET, defines rutas como GET o POST, conectas una base de datos con 
+                   Entity Framework y documentas con Swagger. Así, cualquier cliente (web, móvil o externo) puede consumir tus datos de forma segura y estructurada.
+
+Peticiones sincronas y asíncronas( diferencias) : síncronas espera la respuesta antes de continuar, mientras que asíncrona permite que el programa siga ejecutando otras tareas
+                                                  mientras llega la respuesta el async await. Ya que la APIs modernas se uan peticiones para mejorar el rendimiento y evitar bloqueos. 
+
+para que sirve  SonarQube : para analizar el código y detectar errores, vulnerabilidades y malas prácticas.
+
+clean architecture : Clean Architecture organiza el código en capas: dominio, aplicación, infraestructura y API. Cada capa tiene su rol, y las dependencias siempre van hacia el dominio.
+                     Esto hace el código más limpio, modular y fácil de mantener.”
+
+.net 8 minimal apis e inyección de dependencias : Las Minimal APIs permiten crear endpoints en pocas líneas, deales para microservicios o proyectos donde no necesito todo el peso del MVC.
+                                                  La inyección de dependencias evita crear objetos manualmente y hace que el código sea más flexible y fácil de probar.
+
+
+La observabilidad permite ver qué pasa dentro del sistema mediante logs y métricas, 
+la seguridad protege la aplicación con autenticación y cifrado, y 
+las buenas prácticas garantizan que el código sea limpio, mantenible y confiable.
+
+SQL SERVER :
+
+Concepto SQL 
+Es un lenguaje diseñado para crear, modificar y consultar bases de datos relacionales.
+
+DDL (Data Definition Language) : es todo lo que es CREATE, ALTER, DROP, TRUNCATE
+DML (Data manipulation lenguaje) : se usa para hacer Insert, Update, Select, Delete.
+
+LISTA DE OBJETOS SQL SERVER : Se imparte como Tables, Views, store procedure,functions, Trigers, índices.
+
+TIPOS DE INDICES EN SQL : 
+
+Índice Clustered (Agrupado) “El índice clustered define el orden físico de los registros y acelera las búsquedas por esa columna.
+Índice Non-Clustered (No agrupado) : guarda una copia ordenada de la columna y un puntero a los datos originales.
+Índices compuestos (Composite Index) : Un índice compuesto mejora búsquedas que usan más de una columna, como nombre y precio juntos.
+Índices únicos (Unique Index) : garantizan que no existan registros duplicados en una columna
+
+función definida por usuario : Una función definida por el usuario devuelve un valor o una tabla y se puede llamar dentro de una consulta, igual que las funciones internas de SQL.
+
+Procedimiento almacenado : un conjunto de instrucciones SQL. Puede recibir parámetros, hacer operaciones complejas y devolver resultados.
+
+transacciones en SQL SERVER : Una transacción en SQL Server agrupa varias instrucciones para que se ejecuten como una sola unidad. Si todo sale bien, se confirma con COMMIT; si ocurre un error, se revierte con ROLLBACK. Esto garantiza integridad y consistencia en los datos siguiendo las reglas ACID
+
+
+- concepto React : React es una librería que me permite crear interfaces dinámicas con componentes reutilizables.
+- que es un componente en React 
+   Un componente es una parte de la interfaz que puedo reutilizar y mantener separada del resto del código.
+- props en React 
+   Las props son los parámetros que paso a los componentes para que sean dinámicos
+- virtual DOM 
+   El Virtual DOM mejora el rendimiento porque React solo modifica lo necesario en pantalla.
+- Ciclo de vida de un componente
+  El ciclo de vida define cuándo el componente se crea, se actualiza o se destruye.
+- hooks en React 
+
+Hooks : unciones especiales que permiten usar características de React (estado, ciclo de vida, contexto, etc.) dentro de componentes funcionales.
+
+ useState : Guarda y actualiza los valores dentro del componente y maneja el estado local de un componente.
+ useEffect : me permite ejecutar efectos secundarios, como llamadas a APIs o actualizaciones del DOM.
+ useContext : sirve para compartir información global entre componentes, como el usuario o el tema del sitio.
+ useRef : guarda una referencia directa a un elemento o valor, sin causar renderizados.
+
+Context API : ermite manejar un estado global como usuario, idioma o tema sin tener que pasar props por todos lados.
+
+Lifting State Up : s mover el estado a un nivel superior para que varios componentes lo compartan.
+
+ECMA : ECMA es el estándar que define cómo debe funcionar JavaScript. Las versiones modernas (como ES6) incluyen cosas como let, const, arrow functions y clases.
+
+TypeScript : tipos a JavaScript para evitar errores y hacer el código más predecible.
+
+
+- contexto Api
+- lifting state
+- react router
+- error boundary
+- ECMA
+- TYPESCRIPT
+
+
+
+
+
+
+
+
+
+
+
+
