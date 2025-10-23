@@ -384,3 +384,218 @@ app.Run();
 3. Abrir https://localhost:7153/swagger/index.html
 4. Probar los endpoints.
 5. Conectar front en React en http://localhost:5173/
+
+
+========================================
+Pruebas Unitarias con xunit y Moq
+=======================================
+
+2.1 Creación del proyecto de pruebas
+
+Desde la raíz de la solución (FullstackSolution), se ejecutaron los siguientes comandos:
+
+dotnet new xunit -n Fullstack.Tests
+dotnet sln add Fullstack.Tests/Fullstack.Tests.csproj
+dotnet add Fullstack.Tests reference Application/Application.csproj
+dotnet add Fullstack.Tests reference Infrastructure/Infrastructure.csproj
+dotnet add Fullstack.Tests reference Domain/Domain.csproj
+
+2.2 Instalación de dependencias
+
+Dentro del proyecto Fullstack.Tests, se agregaron los siguientes paquetes NuGet:
+
+dotnet add Fullstack.Tests package Moq
+dotnet add Fullstack.Tests package Microsoft.EntityFrameworkCore.InMemory
+dotnet add Fullstack.Tests package xunit.runner.visualstudio
+
+
+Fullstack.Tests/
+│
+├── Services/
+│   └── ProductServiceTests.cs
+│
+└── Repositories/
+    └── ProductRepositoryTests.cs
+
+
+Services: contiene las pruebas enfocadas en la lógica de negocio (Application).
+Repositories: contiene las pruebas que validan el acceso a datos (Infrastructure).
+
+4. Pruebas Unitarias del Servicio
+
+Archivo: Services/ProductServiceTests.cs
+
+Estas pruebas validan que la clase ProductService implemente correctamente las operaciones CRUD utilizando el repositorio inyectado.
+Se utiliza Moq para simular el comportamiento del repositorio (IProductRepository).
+
+using Application.Interfaces;
+using Application.Services;
+using Domain.DTOs;
+using Domain.Entities;
+using Infrastructure.Repositories;
+using Moq;
+using Xunit;
+
+namespace Fullstack.Tests.Services;
+
+public class ProductServiceTests
+{
+    [Fact]
+    public async Task AddAsync_DeberiaCrearUnProductoCorrectamente()
+    {
+        // Arrange
+        var mockRepo = new Mock<IProductRepository>();
+        var service = new ProductService(mockRepo.Object);
+
+        var dto = new ProductCreateDto
+        {
+            Name = "Brazo biónico",
+            Price = 2500,
+            Stock = 5
+        };
+
+        mockRepo
+            .Setup(r => r.AddAsync(It.IsAny<Product>()))
+            .ReturnsAsync((Product p) => p);
+
+        // Act
+        var result = await service.AddAsync(dto);
+
+        // Assert
+        Assert.Equal(dto.Name, result.Name);
+        Assert.Equal(dto.Price, result.Price);
+        Assert.Equal(dto.Stock, result.Stock);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_DeberiaLanzarExcepcion_SiNoExisteElProducto()
+    {
+        // Arrange
+        var mockRepo = new Mock<IProductRepository>();
+        var service = new ProductService(mockRepo.Object);
+
+        mockRepo
+            .Setup(r => r.GetByIdAsync(It.IsAny<int>()))
+            .ReturnsAsync((Product?)null);
+
+        var dto = new ProductCreateDto { Name = "No existe", Price = 100, Stock = 1 };
+
+        // Act & Assert
+        await Assert.ThrowsAsync<Exception>(() => service.UpdateAsync(99, dto));
+    }
+}
+
+5. Pruebas Unitarias del Repositorio
+
+Archivo: Repositories/ProductRepositoryTests.cs
+
+Estas pruebas validan el comportamiento de ProductRepository mediante una base de datos en memoria usando Microsoft.EntityFrameworkCore.InMemory.
+Así se comprueba el funcionamiento de EF Core sin conectarse a SQL Server.
+
+
+using Domain.Entities;
+using Infrastructure.Data;
+using Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Xunit;
+
+namespace Fullstack.Tests.Repositories;
+
+public class ProductRepositoryTests
+{
+    private AppDbContext GetInMemoryDbContext()
+    {
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+        return new AppDbContext(options);
+    }
+
+    [Fact]
+    public async Task AddAsync_DeberiaAgregarUnProducto()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        var repo = new ProductRepository(context);
+
+        var product = new Product { Name = "Ojo biónico", Price = 5000, Stock = 2 };
+
+        // Act
+        var result = await repo.AddAsync(product);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(1, context.Products.Count());
+    }
+
+    [Fact]
+    public async Task GetAllAsync_DeberiaRegresarListaDeProductos()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        var repo = new ProductRepository(context);
+
+        context.Products.AddRange(
+            new Product { Name = "Chip neural", Price = 2000, Stock = 3 },
+            new Product { Name = "Piel sintética", Price = 1500, Stock = 10 }
+        );
+        await context.SaveChangesAsync();
+
+        // Act
+        var result = await repo.GetAllAsync();
+
+        // Assert
+        Assert.Equal(2, result.Count());
+    }
+}
+
+6. Ejecución de las Pruebas
+
+Para ejecutar todas las pruebas del proyecto, se usa el comando:
+
+dotnet test
+
+Esto compila toda la solución y muestra un resumen similar a:
+
+Starting test execution, please wait...
+Passed! 3 tests run in 330 ms
+
+Correctas: 3  - Con error: 0  - Omitidas: 0  - Total: 3
+Duración: 350 ms - Fullstack.Tests.dll (net8.0)
+
+
+Si se desea ejecutar solo un archivo o una prueba específica:
+
+dotnet test --filter "FullyQualifiedName~ProductServiceTests"
+
+Beneficios de las Pruebas Unitarias
+
+Evitan regresiones: permiten detectar fallos al modificar el código.
+
+Documentan el comportamiento esperado: cada prueba describe cómo debe funcionar el sistema.
+
+Aumentan la confianza en el código: cada “Passed” es una garantía de que la lógica sigue funcionando.
+
+Se integran con CI/CD: pueden ejecutarse automáticamente en pipelines de GitHub Actions o Azure DevOps.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
