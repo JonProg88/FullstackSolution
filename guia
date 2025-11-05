@@ -1,4 +1,93 @@
+
+
+
+
 Net core 8
+Cuáles son las propiedades de la POO? Describe cada una   
+
+La paragdima de la programacion que s eorganiza el codigo de clases y objetos, para modular y facil de mantener por ello sus fundamentos son: 
+
+Encapsulamiento: Ocultar los datos internos del objeto y exponer solo lo necesario mediante metodos publicos. Protege la integridad del objeto. 
+
+Herencia: Permite que una clase derive de otra, heredando sus propiedades y métodos. Facilita la reutilización de codigo. 
+
+Polimorfismo: Capacidad de un objeto de tomar muchas formas. Permite que metodos con el mismo nombre se comporten diferente sgun el objeto que los invoque(sobre carga y sobre escritura). 
+
+Abstracción : Capacidad de un objeto de tomar formas. Permite que metodos con el mismo nombre se comporten diferente segun el objeto que lo sinvoque (sobre carga y sobre escritura). 
+
+Describe los niveles de acceso public, private y protected 
+
+Public: Es cuando un metodo sea publica puede invocarse o llamarlo en cualquier lugar sin importar si este heredando en otra clase. 
+
+Private : Es cuando un una propiedad o metodo solo se puede utilizar en la misma clase, no se pued eheredar ni llamarse en otro lugar, solo la misma clase. 
+
+Protected : es cuando un metodo esta protegido de una clase padre y puede llamarse en otro lugar siempre y cuando la clase hije herede de una clase padre y esa clase padre tenga metodos o propiedades de tipo protected. 
+
+¿Qué es un objeto? 
+
+Un objeto es una instancia de una clase que contiene datos(propiedades) y comportamiento (metodos) 
+
+¿Qué significa sobrecargar un método? 
+
+Su comporta que comparte el mismo nombre con otros métodos, pero se diferencia por el tipo o número de parámetros que se recibe. 
+
+Para qué se usa la palabra reservada this en C#? 
+
+Se utiliza para referirse al objeto actual dentro de una clase. Tambien se utiliza para acceder a los miembros de la misma instancia y para diferenciar entre variables locales y campos de clase con el mismo nombre.  
+
+¿En qué consiste MVC? 
+
+Se compone mendiage (Model, View, Controller) son tres capas. 
+
+Model : Gestiona los datos y la lógica de negocio. 
+
+View : Muestra la información al usuario. 
+
+Controller : recibe las peticiones del usuario, cordina la lógica y devuelve una respuesta. 
+
+
+¿Qué es ASP.NET? 
+
+ASP.NET es un framework de Microsoft para desarrollar aplicaciones web dinámicas. Permite usar lenguajes como C# o VB.NET y facilita la integración con servicios, bases de datos y APIs. 
+ 
+
+
+¿En qué lenguajes se pueden programar páginas ASP.NET? 
+
+Principalmente en C# y Visual.Net (VB.NET), aunque tambien admite otros lenguakes con .Net como F#. 
+
+
+¿Cuáles son los eventos del ciclo de vida de una página? 
+
+El ciclo de vida de un apagina ASP.NET son : 
+
+Page_PreInt, PageInit, Page_InitComplete, Page_PreLoad, Page_Load, Page_LoadComplete, Page_PreRender, Page_Unload.  
+
+
+¿Qué diferencia existe entre autenticación y autorización? 
+
+ 
+
+Autetication : proceso que valida la identidad del usuario (ejemplo: usuario, contraseña). 
+
+Autorzacion : proceso que define qué recursos o acciones puede usar ese usuario una vez autenticado. 
+
+
+¿Qué es un objeto de sesión? 
+
+Objeto de sesion es un aestructura en el servidor que se guarda información temporal. Sobre mientras se navega por la aplicacion. 
+
+
+Qué entiendes por API Web y qué protocolo utiliza? 
+
+Es un ainterfaz que permite la comunicacion entre aplicaciones mediante el protocolo HTTP. Depende que se reciba ya se un JSON o XML. 
+
+Nombra y describe los métodos HTTP comúnmente soportados por REST 
+
+GET : Obtiene datos del servidor. 
+POST : envía datos al servidor para crear nuevos registros 
+PUT: se actualiza los datos. 
+DELETE : elimina los datos. 
 
  SOLID
 O en pocas palabras SOLID me ayuda a escribir código limpio y escalable, DRY evita duplicar lógica y Kiss me recuerda
