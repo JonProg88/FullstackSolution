@@ -48,6 +48,14 @@ Eso ES abstracción
 
 Interfaz = Si quieres usarme, debes de implementar estos metodos
 
+
+Respuesta perfecta para entrevista (guárdala)
+
+La abstracción es el concepto de exponer solo lo necesario y ocultar la implementación.
+En C#, se implementa principalmente mediante interfaces y clases abstractas.
+La interfaz define un contrato sin implementación, mientras que la clase abstracta puede compartir comportamiento base.
+
+
 ¿Qué es un objeto? 
 
 Un objeto es una instancia de una clase que contiene datos(propiedades) y comportamiento (metodos) 
