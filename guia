@@ -9,6 +9,8 @@ Encapsulamiento: (Proteges el estado interno del objeto) Ocultar los datos inter
 Herencia: Permite que una clase derive de otra, heredando sus propiedades y métodos. Facilita la reutilización de codigo. 
 
 Polimorfismo: Capacidad de un objeto de tomar muchas formas. Permite que metodos con el mismo nombre se comporten diferente sgun el objeto que los invoque(sobre carga y sobre escritura). 
+              como ejemplo se utilza como una clase que contenga un metodo de tipo virtual y despues en otra clase puede heredar esa misma clase que tiene el virtual y la puedes sobreescribir
+              override. SObresciber el valor.
 
 Abstracción : Capacidad de un objeto de tomar formas. Permite que metodos con el mismo nombre se comporten diferente segun el objeto que lo sinvoque (sobre carga y sobre escritura). 
 
@@ -19,6 +21,32 @@ Public: Es cuando un metodo sea publica puede invocarse o llamarlo en cualquier 
 Private : Es cuando un una propiedad o metodo solo se puede utilizar en la misma clase, no se pued eheredar ni llamarse en otro lugar, solo la misma clase. 
 
 Protected : es cuando un metodo esta protegido de una clase padre y puede llamarse en otro lugar siempre y cuando la clase hije herede de una clase padre y esa clase padre tenga metodos o propiedades de tipo protected. 
+
+
+Pregntas que diferencia tiene ABstraccion e Interfaz 
+
+Abstraccion = Quedarte con lo importante y esconder el resto
+              Uno hace algo sin saber como funciona por dentro.
+
+public class PagoTarjeta : IPago
+{
+    public void Pagar(decimal monto)
+    {
+        Console.WriteLine($"Pagando {monto} con tarjeta");
+    }
+}
+
+Ipago pago = new PagoTarjeta
+pago.Pagar(500)
+
+Aquí:
+
+Usas IPago
+No sabes si es tarjeta, efectivo, cripto o trueque
+Eso ES abstracción
+
+
+Interfaz = Si quieres usarme, debes de implementar estos metodos
 
 ¿Qué es un objeto? 
 
