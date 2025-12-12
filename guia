@@ -4,7 +4,7 @@ Cuáles son las propiedades de la POO? Describe cada una
 
 La paragdima de la programacion que s eorganiza el codigo de clases y objetos, para modular y facil de mantener por ello sus fundamentos son: 
 
-Encapsulamiento: Ocultar los datos internos del objeto y exponer solo lo necesario mediante metodos publicos. Protege la integridad del objeto. 
+Encapsulamiento: (Proteges el estado interno del objeto) Ocultar los datos internos del objeto y exponer solo lo necesario mediante metodos publicos. Protege la integridad del objeto. 
 
 Herencia: Permite que una clase derive de otra, heredando sus propiedades y métodos. Facilita la reutilización de codigo. 
 
