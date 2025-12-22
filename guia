@@ -23,7 +23,7 @@ Private : Es cuando un una propiedad o metodo solo se puede utilizar en la misma
 Protected : es cuando un metodo esta protegido de una clase padre y puede llamarse en otro lugar siempre y cuando la clase hije herede de una clase padre y esa clase padre tenga metodos o propiedades de tipo protected. 
 
 
-Pregntas que diferencia tiene ABstraccion e Interfaz 
+Preguntas que diferencia tiene ABstraccion e Interfaz 
 
 Abstraccion = Quedarte con lo importante y esconder el resto
               Uno hace algo sin saber como funciona por dentro.
