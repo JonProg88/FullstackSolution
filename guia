@@ -111,9 +111,19 @@ Autorzacion : proceso que define qué recursos o acciones puede usar ese usuario
 Objeto de sesion es un aestructura en el servidor que se guarda información temporal. Sobre mientras se navega por la aplicacion. 
 
 
+Que es un IEnumerable ? 
+trabaja con datos ya en memoria, Es decur qie ya estan eun una colleccion en momeoria y solo los guarda o los contiene.
+
+Que es IQueryable ?
+cuando necesitas filtrar, ordenar o paginar desde la base, evitando traer datos innecesarios a memoria
+
 Qué entiendes por API Web y qué protocolo utiliza? 
 
 Es un ainterfaz que permite la comunicacion entre aplicaciones mediante el protocolo HTTP. Depende que se reciba ya se un JSON o XML. 
+
+
+que es un middleware en asp .net?
+componente de software ensamblado en una canalización (pipeline) de la aplicación para gestionar solicitudes y respuestas HTTP
 
 Nombra y describe los métodos HTTP comúnmente soportados por REST 
 
@@ -201,6 +211,13 @@ función definida por usuario : Una función definida por el usuario devuelve un
 Procedimiento almacenado : un conjunto de instrucciones SQL. Puede recibir parámetros, hacer operaciones complejas y devolver resultados.
 
 transacciones en SQL SERVER : Una transacción en SQL Server agrupa varias instrucciones para que se ejecuten como una sola unidad. Si todo sale bien, se confirma con COMMIT; si ocurre un error, se revierte con ROLLBACK. Esto garantiza integridad y consistencia en los datos siguiendo las reglas ACID
+
+
+trigger INSTEAD OF 
+es un tipo de disparador en bases de datos. que intercepta una operación DML en lugar de ejecutar la acción original, ejecuta la lógica definida en el trigger
+
+Que es una vista materializada ? 
+esto hace que las consultas sean más rápidas, aunque debes refrescarla manualmente
 
 
 - concepto React : React es una librería que me permite crear interfaces dinámicas con componentes reutilizables.
