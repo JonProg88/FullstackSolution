@@ -626,33 +626,150 @@ En un IDE web integrado a Oracle Database.
 
 
 
+Oracle APEX es una plataforma low-code full-stack que corre sobre Oracle Database, donde:
+
+La UI (HTML, CSS, JavaScript) ya viene integrada
+
+La lógica se maneja con PL/SQL
+
+La base de datos es Oracle (nativa)
+Todo vive dentro de Oracle Database.
+
+“APEX no es solo UI ni solo backend, es una plataforma full-stack integrada a Oracle.”
+
+
+¿Cómo se llama el “IDE” de APEX?
+
+Se le llama:
+
+Oracle APEX App Builder
+
+Accedido desde el navegador
+
+Parte del entorno Oracle APEX
+
+
+
+Componentes clave del IDE
+
+App Builder → páginas, regiones, navegación
+
+SQL Workshop → SQL y PL/SQL
+
+Shared Components → seguridad, listas, temas
+
+REST Workshop → APIs
+
+
+APEX se desarrolla desde un IDE web llamado App Builder, integrado a Oracle Database.”
+
+
+
+¿Cómo se conecta APEX con .NET Core? (con código)
+
+Aquí es donde muchos se hacen bolas.
+
+Arquitectura correcta
+
+APEX NO se conecta directo a .NET por BD.
+La comunicación es por APIs REST.
+
+APEX  <--HTTP/JSON-->  API .NET Core  <--->  Oracle / otros sistemas
+
+
+¿CORS?
+
+Sí aplica si APEX consume una API externa
+
+Pero no es el punto central
+CORS solo es configuración HTTP, no el mecanismo de integración.
+
+
+.NET Core API consumida por APEX
+API en .NET Core (ejemplo mínimo)
+
+
+[ApiController]
+[Route("api/clientes")]
+public class ClientesController : ControllerBase
+{
+    [HttpGet]
+    public IActionResult GetClientes()
+    {
+        return Ok(new[]
+        {
+            new { Id = 1, Nombre = "Juan" },
+            new { Id = 2, Nombre = "Ana" }
+        });
+    }
+}
+
+
+CORS en Program.cs
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowApex",
+        policy => policy.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+});
+
+app.UseCors("AllowApex");
+
+
+
+En APEX
+
+REST Data Source
+
+URL: https://tuapi/api/clientes
+
+Método: GET
+
+Consume JSON y lo muestras en un reporte
+
+👉 Frase de entrevista:
+
+“APEX consume APIs REST, por lo que se integra fácilmente con .NET Core.”
 
 
 
 
+¿Qué es Oracle APEX y dónde corre?
+
+Oracle APEX es una plataforma low-code para crear aplicaciones web directamente sobre Oracle Database.
+No necesitas backend separado: APEX = UI + lógica + BD.
+
+¿APEX es frontend, backend o ambos?
+
+Ambos te permite crear aplicacines fullstack.
+
+¿Dónde configuras la conexión a BD en .NET Core y en .NET Framework?
+
+En .NET Core se configura en appsettings.json y se inyecta en Program.cs usando Dependency Injection.
+En .NET Framework se configura en Web.config usando connectionStrings.
 
 
+¿Cómo se integra APEX con una aplicación .NET Core?
+
+APEX se integra con .NET Core mediante servicios REST.
+.NET expone una API y APEX la consume usando REST Data Sources.
+La comunicación es vía HTTP/JSON, no por conexión directa a base de datos.¿Dónde configuras la conexión a BD en .NET Core y en .NET Framework?
+
+Se configura dentro de appsetings.json y por otro lado en webconfig
+
+¿Cómo se integra APEX con una aplicación .NET Core?
 
 
+se integra poniendolo en archivos de clases DBContext. SI se rfequiere alguna conexion de oracle con .net core se 
+pone la conexion en el appsettings.json. Al igual si se requiere poner alguna depedencia como un singleton tambien se
+puede integrar.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+¿Para qué casos usarías APEX y para cuáles .NET?
+Usaría APEX para aplicaciones internas rápidas, CRUDs y reportes sobre Oracle.
+Usaría .NET para APIs, lógica compleja, integraciones externas y aplicaciones más escalables.
 
 
 
