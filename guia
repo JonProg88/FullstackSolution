@@ -257,6 +257,409 @@ TypeScript : tipos a JavaScript para evitar errores y hacer el código más pred
 
 
 
+¿Qué es .NET y para qué se usa?
+
+Respuesta:
+.NET es una plataforma de desarrollo de Microsoft para construir aplicaciones web, desktop, APIs y servicios. Usa C# como lenguaje principal, corre sobre el CLR, gestiona memoria con Garbage Collector y permite trabajar de forma segura y escalable.
+
+
+
+Diferencia entre .NET Framework y .NET (Core / .NET 6+)
+
+Respuesta:
+
+.NET Framework: solo Windows, legado.
+
+.NET (Core / 6 / 7 / 8): multiplataforma, más rápido, modular y el estándar actual.
+Hoy todo proyecto nuevo debe ser .NET 6 o superior.
+
+
+
+
+¿Qué es async / await y por qué es importante?
+
+Respuesta:
+Permite ejecutar operaciones largas (BD, APIs, archivos) sin bloquear el hilo principal.
+Mejora rendimiento y escalabilidad, sobre todo en APIs web con muchos usuarios concurrentes.
+
+
+¿Qué es una API REST en ASP.NET?
+
+Respuesta:
+Es un servicio HTTP que expone recursos usando GET, POST, PUT, DELETE, devuelve normalmente JSON y es stateless. En ASP.NET se implementa con Controllers y rutas.
+
+
+¿Qué es Dependency Injection?
+
+Respuesta:
+Es un patrón donde las dependencias se inyectan, no se crean dentro de la clase.
+Mejora:
+
+Testeo
+
+Mantenimiento
+
+Bajo acoplamiento
+
+
+BLOQUE 2 – Oracle / SQL
+ Diferencia entre SQL Server y Oracle
+
+Respuesta:
+
+Oracle es más usado en empresas grandes y sistemas críticos
+
+Maneja mejor volúmenes grandes y concurrencia
+
+Usa PL/SQL para lógica avanzada
+Conceptualmente SQL es similar, cambia la sintaxis y herramientas.
+
+
+¿Qué es un procedimiento almacenado?
+
+Respuesta:
+Es código SQL/PLSQL almacenado en la base de datos que:
+
+Mejora performance
+
+Centraliza lógica
+
+Reduce tráfico entre app y BD
+
+
+¿Qué es un cursor en Oracle?
+
+Respuesta:
+Es un mecanismo para recorrer filas de una consulta una por una.
+Se usa cuando necesitas procesar registros individualmente, no solo consultarlos.
+
+
+
+Diferencia entre DELETE, TRUNCATE y DROP
+
+Respuesta:
+
+DELETE: borra registros, puede tener WHERE, se puede rollback
+
+TRUNCATE: borra todo, rápido, no rollback
+
+DROP: elimina la tabla
+
+
+¿Qué es un índice y para qué sirve?
+
+Respuesta:
+Es una estructura que acelera búsquedas.
+Mejora SELECT, pero impacta INSERT/UPDATE, así que se usan con criterio.
+
+
+
+BLOQUE 3 – Oracle APEX (CLAVE)
+
+Aquí muchos fallan. Si sabes esto, destacas.
+
+
+¿Qué es Oracle APEX?
+
+Respuesta:
+Oracle APEX es una plataforma low-code para crear aplicaciones web directamente sobre Oracle Database.
+No necesitas backend separado: APEX = UI + lógica + BD.
+
+
+Para qué tipo de aplicaciones se usa APEX?
+
+Respuesta:
+
+Sistemas administrativos
+
+CRUDs rápidos
+
+Dashboards
+
+Reportes
+
+Apps internas empresariales
+Ideal cuando la BD es Oracle y necesitas rapidez.
+
+
+¿Cómo se conecta APEX a la base de datos?
+
+Respuesta:
+APEX corre dentro de Oracle Database, no se conecta: vive ahí.
+Usa SQL y PL/SQL directamente.
+
+
+¿Qué es una región en APEX?
+
+Respuesta:
+Es un componente visual:
+
+Reporte
+
+Formulario
+
+Gráfica
+
+Interactive Report
+Todo lo que ves en pantalla es una región.
+
+
+¿Qué es un Interactive Report?
+
+Respuesta:
+Es un reporte dinámico que permite:
+
+Filtrar
+
+Ordenar
+
+Exportar
+
+Buscar
+Sin escribir código adicional.
+
+
+
+
+¿Cómo se maneja la lógica en APEX?
+
+Respuesta:
+Con:
+
+PL/SQL
+
+Procesos
+
+Validaciones
+
+Triggers de página
+Todo integrado al flujo de la aplicación.
+
+
+
+¿APEX reemplaza a .NET?
+
+Respuesta correcta (clave):
+No.
+APEX es ideal para apps internas rápidas.
+.NET es mejor para:
+
+APIs públicas
+
+Arquitecturas complejas
+
+Microservicios
+
+Integraciones externas
+
+
+BLOQUE 4 – Integración .NET + Oracle
+
+
+¿Cómo conectar .NET con Oracle?
+
+Respuesta:
+Con ODP.NET (Oracle Data Provider) usando OracleConnection, OracleCommand y parámetros.
+Se pueden ejecutar procedimientos almacenados y consultas SQL.
+
+
+
+Cómo manejarías errores entre .NET y Oracle?
+
+Respuesta:
+
+Try/Catch en .NET
+
+Manejo de excepciones en PL/SQL
+
+Logging --> Se refiere poniendo logs para chachar errores.
+
+Mensajes controlados al usuario
+
+
+¿Qué harías si una consulta es lenta?
+
+Respuesta:
+
+Revisar índices
+
+Analizar execution plan
+
+Evitar SELECT *
+
+Optimizar joins
+
+Ver si la lógica debe ir a un procedimiento
+
+
+Preguntas de actitud (no falles aquí)
+¿Qué haces si no sabes algo?
+
+Respuesta:
+Lo investigo, reviso documentación oficial, hago pruebas y pido apoyo si es necesario.
+Prefiero aprender bien a improvisar mal.
+
+
+BLOQUE 6 – Configuración, Conexiones y Frameworks
+
+¿Dónde se configura la conexión a base de datos en .NET Core?
+
+Respuesta:
+En appsettings.json, dentro de ConnectionStrings.
+Luego se lee desde Program.cs y se inyecta usando Dependency Injection.
+Frase clave que les gusta:
+“La configuración queda desacoplada del código”.
+
+¿Cómo se usa esa conexión en la aplicación?
+
+Respuesta:
+Se registra en el contenedor de dependencias en Program.cs y se inyecta en:
+
+Repositorios
+
+Servicios
+
+DbContext (si es EF Core)
+
+Así evitamos crear conexiones manuales en cada clase.
+
+
+¿Dónde se configura la conexión en .NET Framework?
+
+Respuesta:
+En Web.config (o App.config) usando connectionStrings.
+La aplicación la lee con ConfigurationManager.
+
+
+Diferencia clave entre .NET Core y .NET Framework en configuración
+
+Respuesta:
+
+.NET Framework: configuración estática en Web.config
+
+.NET Core: configuración flexible con appsettings.json, variables de entorno y perfiles
+Core es más moderno y escalable.
+
+
+BLOQUE 7 – Oracle APEX (IDE y entorno)
+
+
+¿APEX tiene un IDE?
+
+Respuesta (correcta y directa):
+Sí. Oracle APEX tiene un IDE web, accesible desde el navegador.
+
+Incluye:
+
+Diseño de páginas
+
+SQL Workshop
+
+Editor PL/SQL
+
+Gestión de usuarios y roles
+
+No se usa Visual Studio ni Eclipse.
+
+
+¿Dónde se desarrolla una app APEX?
+
+Respuesta:
+Directamente en el navegador, conectado a Oracle Database.
+Todo queda versionado en la base de datos.
+
+
+¿APEX usa frontend separado?
+
+Respuesta:
+No.
+APEX genera la UI automáticamente usando HTML, CSS y JavaScript internamente.
+El desarrollador se enfoca en datos y lógica.
+
+¿Se puede integrar APEX con .NET?
+
+Respuesta:
+Sí.
+APEX puede consumir APIs REST creadas en .NET o exponer servicios REST usando Oracle REST Data Services (ORDS).
+
+
+“Tenemos un sistema en Oracle, ¿qué usarías: APEX o .NET?”
+
+Respuesta inteligente:
+Depende del caso:
+
+APEX: apps internas rápidas, reportes, CRUDs
+
+.NET: APIs, lógica compleja, integraciones externas
+
+No compiten, se complementan.
+
+
+“Si mañana te piden un CRUD rápido en Oracle, ¿qué harías?”
+
+Respuesta:
+Usaría Oracle APEX para acelerar desarrollo, mantener la lógica en la base y reducir tiempo de entrega.
+
+
+
+“¿Qué pasa si mañana no sabes APEX al 100%?”
+
+Respuesta ganadora:
+Entiendo su arquitectura, sé usar SQL y PL/SQL y puedo adaptarme rápido.
+Además, APEX tiene curva de aprendizaje corta para alguien con backend.
+
+
+Mini ejemplos SIN prueba práctica
+Ejemplo 1: conexión
+
+“¿Dónde se configura la conexión?”
+
+Respuesta corta:
+.NET Core → appsettings.json
+.NET Framework → Web.config
+
+
+¿Dónde programas en APEX?”
+
+Respuesta corta:
+En un IDE web integrado a Oracle Database.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
