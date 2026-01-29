@@ -211,7 +211,8 @@ función definida por usuario : Una función definida por el usuario devuelve un
 
 Procedimiento almacenado : un conjunto de instrucciones SQL. Puede recibir parámetros, hacer operaciones complejas y devolver resultados.
 
-transacciones en SQL SERVER : Una transacción en SQL Server agrupa varias instrucciones para que se ejecuten como una sola unidad. Si todo sale bien, se confirma con COMMIT; si ocurre un error, se revierte con ROLLBACK. Esto garantiza integridad y consistencia en los datos siguiendo las reglas ACID
+transacciones en SQL SERVER : Una transacción en SQL Server agrupa varias instrucciones para que se ejecuten como una sola unidad. Si todo sale bien, se confirma con COMMIT;
+si ocurre un error, se revierte con ROLLBACK. Esto garantiza integridad y consistencia en los datos siguiendo las reglas ACID
 
 
 trigger INSTEAD OF 
@@ -332,8 +333,55 @@ Reduce tráfico entre app y BD
 Respuesta:
 Es un mecanismo para recorrer filas de una consulta una por una.
 Se usa cuando necesitas procesar registros individualmente, no solo consultarlos.
+ 
 
 
+¿Qué es una transacción?
+
+Respuesta:
+Es un conjunto de operaciones que se ejecutan como una unidad lógica usando COMMIT y ROLLBACK.
+
+
+¿Qué es COMMIT y ROLLBACK?
+
+Respuesta:
+
+COMMIT confirma cambios
+
+ROLLBACK los revierte
+
+
+¿Qué es un esquema (schema) en Oracle?
+
+Respuesta correcta:
+Es un contenedor lógico de objetos: tablas, vistas, procedimientos, etc., asociado a un usuario.
+
+¿Qué es una vista?
+
+Respuesta:
+Es una consulta almacenada que presenta datos sin duplicarlos, útil para seguridad y simplificación.
+
+¿Qué es un trigger?
+
+Respuesta correcta:
+Es un bloque PL/SQL que se ejecuta automáticamente ante eventos como INSERT, UPDATE o DELETE.
+
+Trampa Jr: usar triggers para todo (mal diseño).
+
+
+¿Cómo optimizas una consulta lenta?
+
+Respuesta esperada:
+
+Revisar índices
+
+Execution Plan
+
+Evitar SELECT *
+
+Optimizar joins
+
+Mover lógica a procedimientos
 
 Diferencia entre DELETE, TRUNCATE y DROP
 
@@ -369,6 +417,8 @@ No necesitas backend separado: APEX = UI + lógica + BD.
 Para qué tipo de aplicaciones se usa APEX?
 
 Respuesta:
+
+
 
 Sistemas administrativos
 
@@ -462,6 +512,14 @@ Respuesta:
 Con ODP.NET (Oracle Data Provider) usando OracleConnection, OracleCommand y parámetros.
 Se pueden ejecutar procedimientos almacenados y consultas SQL.
 
+
+Diferencia entre PROCEDURE y FUNCTION
+
+Respuesta correcta:
+
+Procedure: ejecuta lógica, no retorna valor
+
+Function: retorna un valor y puede usarse en consultas
 
 
 Cómo manejarías errores entre .NET y Oracle?
